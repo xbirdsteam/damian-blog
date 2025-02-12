@@ -6,7 +6,7 @@ const MENU_ITEMS = [
   { label: "GASTRONOMY", href: "/gastronomy" },
   { label: "ABOUT", href: "/about" },
   { label: "CONSULTANCY", href: "/consultancy" },
-  { label: "CONTACT", href: "/contact" },
+  { label: "CONTACT", href: "/#contact" },
 ];
 
 const MobileNavbar = () => {

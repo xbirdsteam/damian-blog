@@ -25,9 +25,7 @@ export default function PostItem({
           {/* NEWS Label */}
           {posts_categories && (
             <p className="absolute top-3 right-3 bg-neutral-primary-text text-white px-2 py-1 rounded-[4px] text-paragraph-b-14 uppercase">
-              {posts_categories
-                .map((item) => item?.categories?.name)
-                .join(", ")}
+              {posts_categories[0]?.categories?.name}
             </p>
           )}
         </div>

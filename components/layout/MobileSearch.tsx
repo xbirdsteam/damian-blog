@@ -6,6 +6,7 @@ import { SearchSmallIcon } from "../icons/SearchSmallIcon";
 import { XIcon } from "../icons/XIcon";
 import { Loading } from "../common/Loading";
 import { KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 
 interface MobileSearchProps {
   onSearchOpen: (isOpen: boolean) => void;
@@ -14,20 +15,28 @@ interface MobileSearchProps {
 export default function MobileSearch({ onSearchOpen }: MobileSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const router = useRouter();
 
   const handleOpen = (open: boolean) => {
     setIsOpen(open);
     onSearchOpen(open);
   };
 
-  const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       const searchValue = event.currentTarget.value.trim();
+      const params = new URLSearchParams();
       if (searchValue) {
-        setIsSearching(true);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        setIsSearching(false);
+        params.set("search", searchValue);
+      } else {
+        params.delete("search");
       }
+      // Reset to first page when searching
+      params.delete("page");
+      setIsSearching(true);
+      router.push(`/gastronomy?${params.toString()}`);
+      setIsSearching(false);
+      handleOpen(false); // Close search after submitting
     }
   };
 
@@ -58,7 +67,7 @@ export default function MobileSearch({ onSearchOpen }: MobileSearchProps) {
                   placeholder="Search..."
                   className="w-full bg-transparent text-neutral-primary-text outline-none text-[16px] font-medium placeholder:text-gray-500"
                   autoFocus={isOpen}
-                  onKeyDown={handleKeyDown}
+                  onKeyUp={handleKeyUp}
                 />
               </div>
 

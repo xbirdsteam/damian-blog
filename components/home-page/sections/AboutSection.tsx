@@ -30,9 +30,7 @@ export default function AboutSection({ data }: AboutSectionProps) {
 
             <div className="space-y-4">
               <p className="text-neutral-primary-text text-xl font-bold">
-                I&apos;M A PLANT-BASED AMBASSADOR, CHEF, AND ENTREPRENEUR WITH
-                MORE THAN A DECADE OF EXPERIENCE CRAFTING DISHES WITHOUT ANIMAL
-                PROTEIN.
+                {data.about_bio}
               </p>
 
               <p className="text-neutral-primary-text text-base">

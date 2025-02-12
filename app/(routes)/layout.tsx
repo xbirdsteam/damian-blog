@@ -8,7 +8,7 @@ export default function RouteLayout({
 }>) {
   return (
     <div
-      style={{ paddingTop: `calc(${HEADER_HEIGHT}px + 16px)` }}
+      style={{ paddingTop: `calc(${HEADER_HEIGHT}px + 32px)` }}
       className="min-h-screen"
     >
       {children}

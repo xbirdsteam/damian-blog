@@ -74,7 +74,7 @@ export default function Pagination({
         <div className="text-subheader-r-16 text-neutral-text-disable space-x-2">
           <span>Show</span>
           <span className="text-neutral-primary-text inline-flex justify-center items-center size-[34px] bg-neutral-background border border-neutral-border rounded-[2px]">
-            {showingFrom}
+            {showingFrom > totalItems ? totalItems : showingFrom}
           </span>
           <span>
             of{" "}

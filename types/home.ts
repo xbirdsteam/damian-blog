@@ -6,6 +6,7 @@ export interface HomeData {
     about_description: string;
     about_img_url: string;
     about_more_url: string;
+    about_bio: string;
     recipe_description: string;
     recipe_title: string;
     recipe_heading: string;

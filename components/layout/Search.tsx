@@ -5,21 +5,27 @@ import { Loading } from "../common/Loading";
 import { SearchNormalIcon } from "../icons/SearchNormalIcon";
 import { SearchSmallIcon } from "../icons/SearchSmallIcon";
 import { XIcon } from "../icons/XIcon";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const router = useRouter();
 
-  const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       const searchValue = event.currentTarget.value.trim();
+      const params = new URLSearchParams();
       if (searchValue) {
-        setIsSearching(true);
-        // Simulate loading for 2 seconds
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        // router.push(`/search?q=${encodeURIComponent(searchValue)}`);
-        setIsSearching(false);
+        params.set("search", searchValue);
+      } else {
+        params.delete("search");
       }
+      // Reset to first page when searching
+      params.delete("page");
+      setIsSearching(true);
+      router.push(`/gastronomy?${params.toString()}`);
+      setIsSearching(false);
     }
   };
 
@@ -45,7 +51,7 @@ export default function Search() {
                 placeholder="Search..."
                 className="w-full bg-transparent text-neutral-primary-text outline-none text-[16px] font-medium placeholder:text-gray-500"
                 autoFocus={isOpen}
-                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyUp}
               />
             </div>
 
@@ -67,7 +73,7 @@ export default function Search() {
           </button>
         </div>
       </div>
-      {isSearching && <Loading size={5} color="#FFF" />}
+      {isSearching && <Loading size={5} color="#FFF" hasOverlay />}
     </>
   );
 }

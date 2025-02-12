@@ -1,10 +1,10 @@
-import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import { InstagramIcon } from "../icons/InstagramIcon";
-import { YoutubeIcon } from "../icons/YoutubeIcon";
-import { TiktokIcon } from "../icons/TiktokIcon";
 import { LinkdedinIcon } from "../icons/LinkdedinIcon";
 import { PinterestIcon } from "../icons/PinterestIcon";
+import { TiktokIcon } from "../icons/TiktokIcon";
+import { YoutubeIcon } from "../icons/YoutubeIcon";
 
 const socialLinks = [
   { name: "Instagram", href: "#", icon: InstagramIcon },
@@ -14,14 +14,30 @@ const socialLinks = [
   { name: "Pinterest", href: "#", icon: PinterestIcon },
 ];
 
-export function Footer() {
+interface SocialLink {
+  instagram: string;
+  youtube: string;
+  tiktok: string;
+  linkedin: string;
+  pinterest: string;
+}
+
+const getSocialLinks = async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("layouts").select("*").single();
+  if (error) throw error;
+  return data;
+};
+
+export async function Footer() {
+  const layoutData = await getSocialLinks();
   return (
     <footer className="border-t">
       <div className="container py-[50px]">
         <div className="flex flex-col items-center gap-6">
           <div className="relative w-[150px] h-[48px]">
             <Image
-              src="/hero-section-logo.png"
+              src={layoutData.footer_logo ?? ""}
               alt="Hero Logo"
               fill
               className="object-cover"
@@ -33,14 +49,18 @@ export function Footer() {
             {socialLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <Link
-                  prefetch
+                <a
+                  target="_blank"
                   key={link.name}
-                  href={link.href}
+                  href={
+                    layoutData.social_links[
+                      link.name.toLowerCase() as keyof SocialLink
+                    ]
+                  }
                   className="text-neutral-primary-text hover:opacity-70 transition-opacity"
                 >
                   <Icon />
-                </Link>
+                </a>
               );
             })}
           </div>

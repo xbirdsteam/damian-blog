@@ -1,25 +1,40 @@
-import Image from "next/image";
-import Link from "next/link";
 import { HomeData } from "@/types/home";
+import { createClient } from "@/utils/supabase/server";
+import Image from "next/image";
 import { InstagramIcon } from "../../icons/InstagramIcon";
-import { YoutubeIcon } from "../../icons/YoutubeIcon";
-import { TiktokIcon } from "../../icons/TiktokIcon";
 import { LinkdedinIcon } from "../../icons/LinkdedinIcon";
 import { PinterestIcon } from "../../icons/PinterestIcon";
+import { TiktokIcon } from "../../icons/TiktokIcon";
+import { YoutubeIcon } from "../../icons/YoutubeIcon";
 
 interface HeroSectionProps {
   data: HomeData;
 }
+interface SocialLink {
+  instagram: string;
+  youtube: string;
+  tiktok: string;
+  linkedin: string;
+  pinterest: string;
+}
 
 const socialLinks = [
-  { name: "Instagram", href: "#", icon: InstagramIcon },
-  { name: "YouTube", href: "#", icon: YoutubeIcon },
-  { name: "TikTok", href: "#", icon: TiktokIcon },
-  { name: "LinkedIn", href: "#", icon: LinkdedinIcon },
-  { name: "Pinterest", href: "#", icon: PinterestIcon },
+  { name: "Instagram", icon: InstagramIcon },
+  { name: "YouTube", icon: YoutubeIcon },
+  { name: "TikTok", icon: TiktokIcon },
+  { name: "LinkedIn", icon: LinkdedinIcon },
+  { name: "Pinterest", icon: PinterestIcon },
 ];
 
-export default function HeroSection({ data }: HeroSectionProps) {
+const getSocialLinks = async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("layouts").select("*").single();
+  if (error) throw error;
+  return data;
+};
+
+export default async function HeroSection({ data }: HeroSectionProps) {
+  const layoutData = await getSocialLinks();
   return (
     <section className="relative w-full h-screen">
       {/* Desktop Image */}
@@ -51,7 +66,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
         {/* Logo */}
         <div className="relative w-[295px] h-[94px]">
           <Image
-            src="/hero-section-logo.png"
+            src={layoutData.footer_logo ?? ""}
             alt="Hero Logo"
             fill
             className="object-cover"
@@ -64,14 +79,18 @@ export default function HeroSection({ data }: HeroSectionProps) {
           {socialLinks.map((link) => {
             const Icon = link.icon;
             return (
-              <Link
-                prefetch
+              <a
+                target="_blank"
                 key={link.name}
-                href={link.href}
+                href={
+                  layoutData.social_links[
+                    link.name.toLowerCase() as keyof SocialLink
+                  ]
+                }
                 className="text-neutral-primary-text hover:opacity-70 transition-opacity"
               >
                 <Icon />
-              </Link>
+              </a>
             );
           })}
         </div>

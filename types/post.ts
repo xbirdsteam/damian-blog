@@ -2,6 +2,7 @@ export enum PostStatus {
     DRAFT = "draft",
     PUBLISHED = "published",
 }
+
 export interface Post {
     id: string;
     title: string;
@@ -14,6 +15,14 @@ export interface Post {
     created_at: string;
     updated_at: string;
     posts_categories?: PostsCategories[];
+    next_post?: {
+        title: string;
+        slug: string;
+    } | null;
+    prev_post?: {
+        title: string;
+        slug: string;
+    } | null;
 }
 
 export interface PostsCategories {

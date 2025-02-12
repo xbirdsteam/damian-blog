@@ -7,7 +7,7 @@ const navigation = [
   { name: "GASTRONOMY", href: "/gastronomy" },
   { name: "ABOUT", href: "/about" },
   { name: "CONSULTANCY", href: "/consultancy" },
-  { name: "CONTACT", href: "/contact" },
+  { name: "CONTACT", href: "/#contact", isScroll: true },
 ];
 
 export default function Navbar() {
@@ -19,8 +19,10 @@ export default function Navbar() {
         {navigation.map((item, index) => (
           <div key={item.name} className="flex items-center">
             <Link
-              prefetch
               href={item.href}
+              prefetch
+              shallow
+              scroll={item.isScroll}
               className="group relative flex flex-col items-center px-4"
             >
               <p className="text-neutral-primary-text text-base font-medium">

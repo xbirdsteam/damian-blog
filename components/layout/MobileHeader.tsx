@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
+import { CloseXIcon } from "../icons/CloseXIcon";
 import { HamburgerMenuIcon } from "../icons/HamburgerMenuIcon";
-import { XIcon } from "../icons/XIcon";
 import MobileNavbar from "./MobileNavbar";
 import MobileSearch from "./MobileSearch";
 
@@ -25,7 +25,7 @@ const MobileHeader = ({ children }: IProps) => {
             aria-label="Toggle menu"
           >
             <HamburgerMenuIcon />
-            <XIcon />
+            <CloseXIcon />
           </label>
         </div>
       </div>
