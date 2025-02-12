@@ -115,26 +115,34 @@ export default async function PostList({
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   return (
     <div>
-      {/* Desktop view */}
-      <div className="hidden md:block">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-[60px]">
-          {posts.map((post) => (
-            <PostItem key={post.id} {...post} />
-          ))}
+      {posts.length === 0 ? (
+        <div className="flex justify-center items-center min-h-[200px]">
+          <p className="text-neutral-primary-text text-lg">No posts found</p>
         </div>
+      ) : (
+        <>
+          {/* Desktop view */}
+          <div className="hidden md:block">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-[60px]">
+              {posts.map((post) => (
+                <PostItem key={post.id} {...post} />
+              ))}
+            </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          itemsPerPage={ITEMS_PER_PAGE}
-          baseUrl="/gastronomy"
-          showAllResults={showAll}
-        />
-      </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={ITEMS_PER_PAGE}
+              baseUrl="/gastronomy"
+              showAllResults={showAll}
+            />
+          </div>
 
-      {/* Mobile view with infinite scroll */}
-      <MobilePostList initialPosts={posts} initialTotalItems={totalItems} />
+          {/* Mobile view with infinite scroll */}
+          <MobilePostList initialPosts={posts} initialTotalItems={totalItems} />
+        </>
+      )}
     </div>
   );
 }

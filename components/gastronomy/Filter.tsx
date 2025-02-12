@@ -27,7 +27,7 @@ export default function Filter({ categories }: FilterProps) {
   return (
     <div className="flex flex-col mlg:flex-row mlg:items-center mlg:justify-between gap-5">
       {/* Categories */}
-      <div className="flex flex-row justify-center mlg:justify-start flex-wrap gap-x-5 gap-y-[10px]">
+      <div className="flex flex-row justify-center mlg:justify-start flex-wrap gap-x-5 gap-y-[10px] mlg:min-h-11">
         {allCategories
           .filter((cat) => cat.is_active)
           .sort((a, b) => a.index - b.index)

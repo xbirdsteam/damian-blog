@@ -130,7 +130,9 @@ export default async function Consultancy() {
               arrowColor="#0D0D0D"
               className="w-max !bg-white !text-neutral-primary-text"
             >
-              <Link href="/consultancy/form">Complete the Form</Link>
+              <Link prefetch href="/consultancy/form">
+                Complete the Form
+              </Link>
             </Button>
           </div>
         </article>

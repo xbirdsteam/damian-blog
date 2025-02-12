@@ -28,9 +28,9 @@ export const Loading = ({
   return (
     <>
       {hasOverlay && (
-        <div className="fixed top-0 left-0 mlg:-top-4 mlg:-left-4 w-screen h-screen bg-black/60"></div>
+        <div className="fixed top-0 left-0 w-screen h-screen bg-black/60"></div>
       )}
-      <div className="fixed top-0 left-0 mlg:-top-4 mlg:-left-4 w-screen h-screen flex justify-center items-center">
+      <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center">
         <div
           className="relative flex items-center justify-start"
           style={{

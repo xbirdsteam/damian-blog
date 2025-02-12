@@ -24,6 +24,7 @@ export default function MobileSearch({ onSearchOpen }: MobileSearchProps) {
 
   const handleKeyUp = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
+      setIsSearching(true);
       const searchValue = event.currentTarget.value.trim();
       const params = new URLSearchParams();
       if (searchValue) {
@@ -33,7 +34,7 @@ export default function MobileSearch({ onSearchOpen }: MobileSearchProps) {
       }
       // Reset to first page when searching
       params.delete("page");
-      setIsSearching(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       router.push(`/gastronomy?${params.toString()}`);
       setIsSearching(false);
       handleOpen(false); // Close search after submitting
