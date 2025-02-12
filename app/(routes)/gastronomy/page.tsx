@@ -1,3 +1,4 @@
+import { PageLoading } from "@/components/common/PageLoading";
 import Gastronomy from "@/components/gastronomy/Gastronomy";
 import { createClient } from "@/utils/supabase/server";
 
@@ -23,5 +24,10 @@ async function getCategories() {
 export default async function GastronomyPage({ searchParams }: IProps) {
   const categories = await getCategories();
   const paramsRes = await searchParams;
-  return <Gastronomy categories={categories} searchParams={paramsRes} />;
+  return (
+    <>
+      <PageLoading />
+      <Gastronomy categories={categories} searchParams={paramsRes} />
+    </>
+  );
 }

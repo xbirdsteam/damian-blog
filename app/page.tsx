@@ -6,6 +6,7 @@ import AboutSection from "@/components/home-page/sections/AboutSection";
 import RecipeSection from "@/components/home-page/sections/RecipeSection";
 import ContactSection from "@/components/home-page/sections/ContactSection";
 import { Metadata } from "next";
+import { PageLoading } from "@/components/common/PageLoading";
 
 async function getHomeData() {
   const supabase = await createClient();
@@ -43,6 +44,7 @@ export default async function Home() {
   if (!homeData) return null;
   return (
     <>
+      <PageLoading />
       <HeroSection data={homeData} />
       <ExperienceSection />
       <AboutSection data={homeData} />

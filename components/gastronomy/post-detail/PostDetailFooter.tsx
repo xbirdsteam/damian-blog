@@ -22,6 +22,32 @@ export default function PostDetailFooter({
   prevPost,
   nextPost,
 }: PostDetailFooterProps) {
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  const handleShare = (platform: string) => {
+    const text = "Check out this article!";
+    let shareLink = "";
+    switch (platform) {
+      case "facebook":
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          shareUrl
+        )}&amp;src=sdkpreparse`;
+        break;
+      case "twitter":
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+          shareUrl
+        )}&text=${encodeURIComponent(text)}`;
+        break;
+      case "linkedin":
+        shareLink = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+          shareUrl
+        )}`;
+        break;
+    }
+
+    window.open(shareLink, "_blank", "width=600,height=400");
+  };
+
   return (
     <footer className="space-y-10">
       {/* Tags and Social Share */}
@@ -42,13 +68,22 @@ export default function PostDetailFooter({
             Share the article via
           </span>
           <div className="flex gap-4">
-            <button>
+            <button
+              onClick={() => handleShare("facebook")}
+              aria-label="Share on Facebook"
+            >
               <FacebookIcon />
             </button>
-            <button>
+            <button
+              onClick={() => handleShare("twitter")}
+              aria-label="Share on Twitter"
+            >
               <TwitterIcon />
             </button>
-            <button>
+            <button
+              onClick={() => handleShare("linkedin")}
+              aria-label="Share on LinkedIn"
+            >
               <LinkedinIcon />
             </button>
           </div>

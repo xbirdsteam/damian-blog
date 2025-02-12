@@ -14,6 +14,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import PostCommentItem from "./PostCommentItem";
+import { Instagram } from "lucide-react";
+import Cookies from "js-cookie";
 
 interface PostCommentProps {
   postId: string;
@@ -125,6 +127,18 @@ export default function PostComment({ postId }: PostCommentProps) {
     }
   }, []);
 
+  // Update effect to check for Instagram login
+  useEffect(() => {
+    const instagramUsername = Cookies.get("instagram_username");
+    if (instagramUsername) {
+      setFormData((prev) => ({
+        ...prev,
+        author_name: instagramUsername,
+        // You might want to set a default email or handle this differently
+      }));
+    }
+  }, []);
+
   // Add a function to check if form is valid
   const isFormValid = () => {
     return (
@@ -151,6 +165,50 @@ export default function PostComment({ postId }: PostCommentProps) {
       pages.push(i);
     }
     return pages;
+  };
+
+  // Modify handleInstagramLogin to show loading state
+  const handleInstagramLogin = () => {
+    toast.loading("Connecting to Instagram...");
+    const clientId = process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID;
+    const redirectUri = encodeURIComponent(
+      `${window.location.origin}/api/auth/instagram/callback`
+    );
+    console.log(redirectUri);
+    // Use Instagram Basic Display API instead of Business API
+    const instagramUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=instagram_business_basic,
+    instagram_business_manage_messages,
+    instagram_business_manage_comments,
+    instagram_business_content_publish&response_type=code`;
+
+    const width = 600;
+    const height = 700;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+
+    const popup = window.open(
+      instagramUrl,
+      "instagram-auth",
+      `width=${width},height=${height},left=${left},top=${top},status=yes,scrollbars=yes`
+    );
+
+    // Check for popup closure and cookie presence
+    const checkPopup = setInterval(() => {
+      if (popup?.closed) {
+        clearInterval(checkPopup);
+        const instagramUsername = Cookies.get("instagram_username");
+        if (instagramUsername) {
+          toast.success("Successfully connected with Instagram!");
+          setFormData((prev) => ({
+            ...prev,
+            author_name: instagramUsername,
+          }));
+        } else {
+          toast.error("Instagram connection was cancelled or failed");
+        }
+        toast.dismiss(); // Dismiss the loading toast
+      }
+    }, 500);
   };
 
   return (
@@ -240,6 +298,18 @@ export default function PostComment({ postId }: PostCommentProps) {
           <p className="text-paragraph-r-14 text-neutral-text-secondary">
             Your email address will not be published
           </p>
+
+          {/* Move Instagram login button outside the form */}
+          <Button
+            onClick={handleInstagramLogin}
+            variant="outline"
+            type="button"
+            className="w-full flex items-center justify-center gap-2 border-neutral-divider hover:border-neutral-primary-text"
+          >
+            <Instagram className="size-4" />
+            Login with Instagram
+          </Button>
+
           <form id="comment-form" className="space-y-6" onSubmit={handleSubmit}>
             <Textarea
               placeholder="Write something"

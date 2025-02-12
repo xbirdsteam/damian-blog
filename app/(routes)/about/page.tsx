@@ -1,4 +1,5 @@
 import AboutMe from "@/components/about-me/AboutMe";
+import { PageLoading } from "@/components/common/PageLoading";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
 
@@ -27,5 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function AboutPage() {
-  return <AboutMe />;
+  return (
+    <>
+      <PageLoading />
+      <AboutMe />
+    </>
+  );
 }

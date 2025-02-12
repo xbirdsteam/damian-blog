@@ -19,7 +19,6 @@ import FormStepSix from "./FormStepSix";
 import FormStepThree from "./FormStepThree";
 import FormStepTwo from "./FormStepTwo";
 import SuccessfullSubmit from "./SuccessfullSubmit";
-import { Loading } from "@/components/common/Loading";
 
 export default function ConsultanyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,7 +37,7 @@ export default function ConsultanyForm() {
     staleTime: 1000 * 60 * 60 * 24,
   });
 
-  const { data: steps, isLoading } = useQuery({
+  const { data: steps } = useQuery({
     queryKey: ["consultancySteps"],
     queryFn: getConsultancySteps,
     staleTime: 1000 * 60 * 60 * 24,
@@ -226,8 +225,6 @@ export default function ConsultanyForm() {
       </section>
     );
   }
-
-  if (isLoading) return <Loading size={5} color="#FFF" hasOverlay />;
 
   return (
     <section>

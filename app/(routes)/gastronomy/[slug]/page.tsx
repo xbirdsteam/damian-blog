@@ -1,4 +1,5 @@
 import { getPostBySlug } from "@/actions/post";
+import { PageLoading } from "@/components/common/PageLoading";
 import PostDetailWrapper from "@/components/gastronomy/post-detail/PostDetailWrapper";
 
 type Props = {
@@ -21,5 +22,10 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default function GastronomyPostDetailPage() {
-  return <PostDetailWrapper />;
+  return (
+    <>
+      <PageLoading />
+      <PostDetailWrapper />
+    </>
+  );
 }

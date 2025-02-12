@@ -5,6 +5,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import Providers from "./providers";
+import { CyberCursor } from "@/components/common/CyberCursor";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${sourceSans.variable} antialiased`}>
+        <CyberCursor />
         <Providers>
           <Header />
           <main>{children}</main>

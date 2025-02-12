@@ -1,3 +1,4 @@
+import { PageLoading } from "@/components/common/PageLoading";
 import Consultancy from "@/components/consultancy/Consultancy";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
@@ -27,5 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function ConsultancyPage() {
-  return <Consultancy />;
+  return (
+    <>
+      <Consultancy />
+      <PageLoading />
+    </>
+  );
 }
