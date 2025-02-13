@@ -1,7 +1,7 @@
 'use server'
 
+import { Comment } from "@/types/comment";
 import { createClient } from "@/utils/supabase/server";
-import { Comment, CreateCommentDTO } from "@/types/comment";
 
 const COMMENTS_PER_PAGE = 5;
 
@@ -60,7 +60,14 @@ export async function getCommentsByPostId(postId: string, page: number = 1): Pro
     };
 }
 
-export async function createComment(data: CreateCommentDTO) {
+export async function createComment(data: {
+  post_id: string;
+  content: string;
+  author_name: string;
+  author_email: string;
+  avatar_url?: string | null;
+  parent_id?: string;
+}) {
     const supabase = await createClient();
 
     const { error } = await supabase

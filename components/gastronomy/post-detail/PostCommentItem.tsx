@@ -1,4 +1,5 @@
 import { ReplyIcon } from "@/components/icons/ReplyIcon";
+import Image from "next/image";
 
 interface CommentProps {
   id?: string;
@@ -7,6 +8,7 @@ interface CommentProps {
   date: string;
   isReply?: boolean;
   onReply?: (id: string, author: string, parentId?: string) => void;
+  avatar_url?: string | null;
 }
 
 export default function PostCommentItem({
@@ -16,6 +18,7 @@ export default function PostCommentItem({
   date,
   isReply = false,
   onReply,
+  avatar_url,
 }: CommentProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -42,8 +45,17 @@ export default function PostCommentItem({
         isReply ? "mlg:pl-4" : ""
       }`}
     >
-      <div className="h-[34px] w-[34px] shrink-0 rounded-full bg-neutral-primary-text text-white flex items-center justify-center text-subheader-b-16">
-        {getInitial(author)}
+      <div className="size-[34px] relative shrink-0 rounded-full bg-neutral-primary-text text-white flex items-center justify-center text-subheader-b-16">
+        {avatar_url ? (
+          <Image
+          fill
+            src={avatar_url }
+            alt={author}
+            className="w-full h-full object-cover rounded-full"
+          />
+        ) : (
+          getInitial(author)
+        )}
       </div>
       <div className="flex-1">
         <div className="flex justify-between items-start mb-2 flex-col mlg:flex-row">

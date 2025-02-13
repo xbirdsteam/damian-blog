@@ -8,12 +8,5 @@ export interface Comment {
     created_at: string;
     updated_at: string;
     replies?: Comment[];
+    avatar_url?: string | null;
 }
-
-export interface CreateCommentDTO {
-    post_id: string;
-    author_name: string;
-    author_email: string;
-    content: string;
-    parent_id?: string;
-} 

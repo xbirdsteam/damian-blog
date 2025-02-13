@@ -57,6 +57,11 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  /* Add smooth scrolling to html element */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer base {
