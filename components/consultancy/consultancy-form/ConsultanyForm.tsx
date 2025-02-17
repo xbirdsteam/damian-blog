@@ -56,8 +56,8 @@ export default function ConsultanyForm() {
     );
     switch (step) {
       case 1:
-        // Check if stepData is empty
-        if (Object.keys(stepData).length === 0) return false;
+        // Check if stepData has exactly 6 fields and is not empty
+        if (Object.keys(stepData).length === 0 || Object.keys(stepData).length !== 6) return false;
         // Check if email is valid
         if (
           stepData["Email address"] &&
@@ -152,8 +152,6 @@ export default function ConsultanyForm() {
     for (let step = 1; step <= 6; step++) {
       if (!validateStep(step)) {
         incompleteSteps.push(step);
-      } else {
-        return;
       }
     }
 
@@ -184,7 +182,7 @@ export default function ConsultanyForm() {
         toast.error("Receiver email not found");
         return;
       }
-
+      console.log("fetch")
       // Send email with formatted data
       const response = await fetch("/api/send-email", {
         method: "POST",
@@ -263,6 +261,7 @@ export default function ConsultanyForm() {
                     toast.error("Please enter a valid email address");
                     return;
                   }
+                  console.log(validateStep(currentStep))
                   if (validateStep(currentStep)) {
                     setCurrentStep(currentStep + 1);
                   } else {

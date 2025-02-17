@@ -1,3 +1,9 @@
+export enum CommentStatus {
+  APPROVED = 'approved',
+  UNAPPROVED = 'unapproved',
+  TRASH = 'trash'
+}
+
 export interface Comment {
     id: string;
     post_id: string;
@@ -9,4 +15,5 @@ export interface Comment {
     updated_at: string;
     replies?: Comment[];
     avatar_url?: string | null;
+    status: CommentStatus;
 }

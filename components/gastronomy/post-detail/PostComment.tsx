@@ -14,10 +14,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { Instagram } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import PostCommentItem from "./PostCommentItem";
-import { Instagram } from "lucide-react";
 
 interface PostCommentProps {
   postId: string;
@@ -71,7 +71,7 @@ export default function PostComment({ postId }: PostCommentProps) {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       setFormData((prev) => ({ ...prev, content: "" }));
       setCurrentPage(1);
-      toast.success("Comment posted successfully!");
+      toast.success("Comment submitted for approval!");
     },
     onError: () => {
       toast.error("Failed to post comment. Please try again.");
@@ -91,14 +91,13 @@ export default function PostComment({ postId }: PostCommentProps) {
       ? `${formData.author_name} Reply to ${getOriginalAuthor(replyTo.author)}`
       : formData.author_name;
 
-    // Add avatar_url if user is logged in with Instagram
     const commentData = {
       post_id: postId,
       content: formData.content,
       author_name: authorName,
       author_email: formData.author_email,
       parent_id: replyTo.isReplying ? replyTo.parentId : undefined,
-      avatar_url: isInstagramLoggedIn ? instagramUser?.profilePictureUrl : null, // Add Instagram profile picture if available
+      avatar_url: isInstagramLoggedIn ? instagramUser?.profilePictureUrl : null,
     };
 
     createCommentMutation.mutate(commentData);

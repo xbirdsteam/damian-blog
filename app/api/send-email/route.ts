@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { EmailData, ContactFormData } from "@/types/email";
 import { generateSuccessTemplate } from "./templates/successTemplate";
 import { ConsultancySuccessStep } from "@/types/consultancy";
+import { createLead, FormType } from "@/actions/lead";
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -161,6 +162,12 @@ export async function POST(req: Request) {
 
                 await transporter.sendMail(mailOptions);
 
+                await createLead({
+                    name: formData.name,
+                    email: formData.email,
+                    form_type: FormType.CONTACT
+                });
+
                 return NextResponse.json(
                     { message: "Email sent successfully" },
                     { status: 200 }
@@ -200,6 +207,13 @@ export async function POST(req: Request) {
                         html: successHtml,
                     }),
                 ]);
+
+                await createLead({
+                    name: formData[1]["Full name"],
+                    email: formData[1]["Email address"],
+                    phone: formData[1]["Phone number"],
+                    form_type: FormType.CONSULTANT
+                });
 
                 return NextResponse.json(
                     { message: "Emails sent successfully" },
