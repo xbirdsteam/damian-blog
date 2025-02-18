@@ -20,6 +20,7 @@ import FormStepThree from "./FormStepThree";
 import FormStepTwo from "./FormStepTwo";
 import SuccessfullSubmit from "./SuccessfullSubmit";
 import { isValidPhoneNumber } from "libphonenumber-js";
+
 export default function ConsultanyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -145,6 +146,27 @@ export default function ConsultanyForm() {
     return formattedStepData;
   };
 
+  const validateStepOneField = (stepData: any) => {
+    // Get all keys from stepData
+    const keys = Object.keys(stepData);
+    
+    // Check email fields
+    const emailField = keys.find(key => key.endsWith('_email'));
+    if (emailField && !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(stepData[emailField]))) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
+    // Check phone fields
+    const phoneField = keys.find(key => key.endsWith('_tel'));
+    if (phoneField && !isValidPhoneNumber(stepData[phoneField])) {
+      toast.error("Please enter a valid phone number");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     // Check all steps
@@ -251,19 +273,11 @@ export default function ConsultanyForm() {
                 className="text-white w-[200px]"
                 onClick={() => {
                   const stepData = formData[currentStep] || {};
-                  if (
-                    currentStep === 1 &&
-                    stepData["Email address"] &&
-                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-                      stepData["Email address"]
-                    )
-                  ) {
-                    toast.error("Please enter a valid email address");
-                    return;
-                  } else if (currentStep === 1 && stepData["Phone number"] && !isValidPhoneNumber(stepData["Phone number"])) {
-                    toast.error("Please enter a valid phone number");
+                  
+                  if (currentStep === 1 && !validateStepOneField(stepData)) {
                     return;
                   }
+
                   if (validateStep(currentStep)) {
                     setCurrentStep(currentStep + 1);
                   } else {

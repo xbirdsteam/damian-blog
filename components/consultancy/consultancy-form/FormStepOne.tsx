@@ -50,8 +50,8 @@ export default function FormStepOne({ data }: IProps) {
                     <PhoneInput
                       id={inputName}
                       name={inputName}
-                      value={currentStepData[inputName] || ""}
-                      onChange={(value) => handleChange(inputName, value)}
+                      value={currentStepData[`${inputName}_${field.type}`] || ""}
+                      onChange={(value) => handleChange(`${inputName}_${field.type}`, value)}
                       defaultCountry="IT"
                     />
                   ) : (
@@ -60,8 +60,8 @@ export default function FormStepOne({ data }: IProps) {
                       id={inputName}
                       name={inputName}
                       placeholder="Type"
-                      value={currentStepData[inputName] || ""}
-                      onChange={(e) => handleChange(inputName, e.target.value)}
+                      value={currentStepData[`${inputName}_${field.type}`] || ""}
+                      onChange={(e) => handleChange(`${inputName}_${field.type}`, e.target.value)}
                     />
                   )}
                 </div>
