@@ -20,16 +20,13 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-[50px] w-full items-center justify-between rounded-[4px] border border-neutral-border bg-white py-[13px] px-[14px] text-base text-neutral-primary-text",
-      "[&>span]:text-neutral-primary-text",
-      "hover:border-neutral-text-disable focus:border-neutral-primary-text focus:outline-none",
-      "disabled:bg-neutral-background disabled:cursor-not-allowed",
+      "flex items-center justify-between gap-2",
       className
     )}
     {...props}
   >
     {children}
-    <SelectPrimitive.Icon asChild>
+    <SelectPrimitive.Icon asChild className="shrink-0">
       <ArrowDownIcon />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>

@@ -26,11 +26,12 @@ export default function PostDetailContent() {
           content={JSON.parse(post.content)}
           created_at={post.created_at}
           post_img={post.post_img}
+          categories={post.posts_categories?.map((category) => category.categories.name) || []}
         />
       </article>
       <PostDetailFooter
         tags={
-          post.posts_categories?.map((category) => category.categories.name) ||
+          post.tags ||
           []
         }
         prevPost={post.prev_post || undefined}

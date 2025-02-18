@@ -15,6 +15,7 @@ interface PostContentRenderProps
   content: ContentElement[];
   created_at: string;
   post_img: string;
+  categories: string[];
 }
 
 export default function PostContentRender({
@@ -22,6 +23,7 @@ export default function PostContentRender({
   className,
   created_at,
   post_img,
+  categories,
   ...props
 }: PostContentRenderProps) {
   const renderElement = (element: ContentElement) => {
@@ -101,6 +103,16 @@ export default function PostContentRender({
           priority
           className="object-cover"
         />
+      <div className="absolute bottom-4 right-4 flex gap-2">
+        {categories?.map((category) => (
+          <span
+            key={category}
+            className="bg-neutral-primary-text text-white px-2 py-1 rounded-[4px] text-paragraph-b-14 uppercase"
+          >
+            {category}
+          </span>
+        ))}
+      </div>
       </div>
 
       {content.map((element) => renderElement(element))}

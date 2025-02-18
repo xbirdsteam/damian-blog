@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { ConsultancyStepBaseField } from "@/types/consultancy";
 import { useConsultancyFormStore } from "@/store/consultancyFormStore";
 
@@ -45,14 +46,24 @@ export default function FormStepOne({ data }: IProps) {
                   >
                     {field.label}
                   </label>
-                  <Input
-                    type={field.type}
-                    id={inputName}
-                    name={inputName}
-                    placeholder="Type"
-                    value={currentStepData[inputName] || ""}
-                    onChange={(e) => handleChange(inputName, e.target.value)}
-                  />
+                  {field.type === 'tel' ? (
+                    <PhoneInput
+                      id={inputName}
+                      name={inputName}
+                      value={currentStepData[inputName] || ""}
+                      onChange={(value) => handleChange(inputName, value)}
+                      defaultCountry="IT"
+                    />
+                  ) : (
+                    <Input
+                      type={field.type}
+                      id={inputName}
+                      name={inputName}
+                      placeholder="Type"
+                      value={currentStepData[inputName] || ""}
+                      onChange={(e) => handleChange(inputName, e.target.value)}
+                    />
+                  )}
                 </div>
               );
             })}

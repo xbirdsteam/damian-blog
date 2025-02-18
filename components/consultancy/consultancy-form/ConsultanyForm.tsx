@@ -19,7 +19,7 @@ import FormStepSix from "./FormStepSix";
 import FormStepThree from "./FormStepThree";
 import FormStepTwo from "./FormStepTwo";
 import SuccessfullSubmit from "./SuccessfullSubmit";
-
+import { isValidPhoneNumber } from "libphonenumber-js";
 export default function ConsultanyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -260,8 +260,10 @@ export default function ConsultanyForm() {
                   ) {
                     toast.error("Please enter a valid email address");
                     return;
+                  } else if (currentStep === 1 && stepData["Phone number"] && !isValidPhoneNumber(stepData["Phone number"])) {
+                    toast.error("Please enter a valid phone number");
+                    return;
                   }
-                  console.log(validateStep(currentStep))
                   if (validateStep(currentStep)) {
                     setCurrentStep(currentStep + 1);
                   } else {

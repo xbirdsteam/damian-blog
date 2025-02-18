@@ -23,6 +23,7 @@ export interface Post {
         title: string;
         slug: string;
     } | null;
+    tags?: string[];
 }
 
 export interface PostsCategories {
