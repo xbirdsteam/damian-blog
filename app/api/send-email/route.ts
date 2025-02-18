@@ -38,13 +38,18 @@ const generateContactTemplate = (data: ContactFormData) => `
     </div>
 `;
 
-// Function to generate table rows from step data
+// Helper function to clean field name by removing type suffix
+const cleanFieldName = (key: string) => {
+    return key.replace(/_text$|_email$|_tel$/, '');
+};
+
+// Generate table rows with cleaned field names
 const generateTableRows = (stepData: Record<string, string>) => {
     return Object.entries(stepData)
         .map(
             ([key, value]) => `
             <tr>
-                <td style="padding: 16px; border-bottom: 1px solid #e5e7eb; width: 300px; background-color: #f9fafb; color: #4b5563; font-weight: 500;">${key}</td>
+                <td style="padding: 16px; border-bottom: 1px solid #e5e7eb; width: 300px; background-color: #f9fafb; color: #4b5563; font-weight: 500;">${cleanFieldName(key)}</td>
                 <td style="padding: 16px; border-bottom: 1px solid #e5e7eb; color: #111827;">${value || "Not provided"}</td>
             </tr>
         `
@@ -180,12 +185,11 @@ export async function POST(req: Request) {
                     );
                 }
 
-                // Send two emails: one with form data and one with success steps
                 const formHtml = generateConsultancyTemplate(formData as Record<number, Record<string, string>>);
-                const successHtml = generateConsultancySuccessTemplate(successSteps || [])
-
-                // Get email from form data section 1
-                const userEmail = (formData as Record<number, Record<string, string>>)[1]?.['Email address'];
+                const successHtml = generateConsultancySuccessTemplate(successSteps || []);
+                
+                // Get email from form data section 1 with new structure
+                const userEmail = (formData as Record<number, Record<string, string>>)[1]?.['Email address_email'];
                 if (!userEmail) {
                     return NextResponse.json(
                         { error: "User email not found in form data" },
@@ -208,10 +212,11 @@ export async function POST(req: Request) {
                     }),
                 ]);
 
+                // Update createLead call with new data structure
                 await createLead({
-                    name: formData[1]["Full name"],
-                    email: formData[1]["Email address"],
-                    phone: formData[1]["Phone number"],
+                    name: formData[1]["Full name_text"],
+                    email: formData[1]["Email address_email"],
+                    phone: formData[1]["Phone number_tel"],
                     form_type: FormType.CONSULTANT
                 });
 

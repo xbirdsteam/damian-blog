@@ -204,7 +204,6 @@ export default function ConsultanyForm() {
         toast.error("Receiver email not found");
         return;
       }
-      console.log("fetch")
       // Send email with formatted data
       const response = await fetch("/api/send-email", {
         method: "POST",
