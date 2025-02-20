@@ -24,6 +24,13 @@ export interface Post {
         slug: string;
     } | null;
     tags?: string[];
+    author_id: string;
+    users?: {
+        id: string;
+        fullname: string;
+        avatar_url: string;
+    };
+    
 }
 
 export interface PostsCategories {

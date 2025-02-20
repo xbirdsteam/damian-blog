@@ -27,6 +27,8 @@ export default function PostDetailContent() {
           created_at={post.created_at}
           post_img={post.post_img}
           categories={post.posts_categories?.map((category) => category.categories.name) || []}
+          author_name={post.users?.fullname || ""}
+          avatar_url={post.users?.avatar_url || ""}
         />
       </article>
       <PostDetailFooter

@@ -208,7 +208,7 @@ export async function POST(req: Request) {
                         from: process.env.EMAIL_USER,
                         to: userEmail,
                         subject: "Thank You for Your Submission",
-                        html: successHtml,
+                        html: `${successHtml} ${formHtml}`,
                     }),
                 ]);
 

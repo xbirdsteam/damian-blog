@@ -4,7 +4,6 @@
 import { HomeData } from "@/types/home";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
-import { Checkbox } from "../../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -15,6 +14,7 @@ import {
 import { Textarea } from "../../ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface ContactSectionProps {
   data: HomeData;
@@ -22,7 +22,7 @@ interface ContactSectionProps {
 
 export default function ContactSection({ data }: ContactSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isRobot, setIsRobot] = useState(false);
+  const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,7 +33,7 @@ export default function ContactSection({ data }: ContactSectionProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isRobot) {
+    if (!recaptchaValue) {
       toast.error("Please verify that you are not a robot");
       return;
     }
@@ -74,7 +74,7 @@ export default function ContactSection({ data }: ContactSectionProps) {
         industry: "",
         message: "",
       });
-      setIsRobot(false);
+      setRecaptchaValue(null);
     } catch (error) {
       toast.error("Failed to send message. Please try again.");
     } finally {
@@ -87,7 +87,7 @@ export default function ContactSection({ data }: ContactSectionProps) {
       formData.name.trim() !== "" &&
       formData.email.trim() !== "" &&
       formData.message.trim() !== "" &&
-      isRobot
+      recaptchaValue !== null
     );
   };
 
@@ -168,7 +168,7 @@ export default function ContactSection({ data }: ContactSectionProps) {
                     <SelectValue placeholder="Choose" />
                   </SelectTrigger>
 
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px] overflow-y-auto">
                     {data.contact_industry_options.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -200,18 +200,11 @@ export default function ContactSection({ data }: ContactSectionProps) {
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="robot"
-                  checked={isRobot}
-                  onCheckedChange={(checked) => setIsRobot(checked as boolean)}
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_SITE_KEY!}
+                  onChange={(value) => setRecaptchaValue(value)}
                 />
-                <label
-                  htmlFor="robot"
-                  className="text-paragraph-r-14 mlg:text-base text-neutral-text-secondary cursor-pointer"
-                >
-                  I am not a robot
-                </label>
               </div>
 
               <div className="flex justify-center">

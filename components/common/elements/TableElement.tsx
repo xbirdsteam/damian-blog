@@ -13,7 +13,6 @@ interface TableElementProps {
 
 export default function TableElement({ columns, rows }: TableElementProps) {
   const cellWidth = `${100 / columns.length}%`;
-
   return (
     <div className="overflow-x-auto my-4">
       {/* Desktop View (≥ mlg) */}
@@ -43,7 +42,7 @@ export default function TableElement({ columns, rows }: TableElementProps) {
                   {row[column.key].type === "list" ? (
                     <ListElement lists={row[column.key].lists} />
                   ) : (
-                    row[column.key]
+                    row[column.key]?.content
                   )}
                 </td>
               ))}
@@ -70,7 +69,7 @@ export default function TableElement({ columns, rows }: TableElementProps) {
                   {row[column.key].type === "list" ? (
                     <ListElement lists={row[column.key].lists} />
                   ) : (
-                    row[column.key]
+                    row[column.key]?.content
                   )}
                 </div>
               </div>

@@ -16,6 +16,8 @@ interface PostContentRenderProps
   created_at: string;
   post_img: string;
   categories: string[];
+  author_name: string;
+  avatar_url: string;
 }
 
 export default function PostContentRender({
@@ -24,6 +26,8 @@ export default function PostContentRender({
   created_at,
   post_img,
   categories,
+  author_name,
+  avatar_url,
   ...props
 }: PostContentRenderProps) {
   const renderElement = (element: ContentElement) => {
@@ -79,15 +83,15 @@ export default function PostContentRender({
         );
       case "image":
         return <ImageElement key={element.id} urls={element.urls || []} />;
-      case "post-author":
-        return (
-          <PostAuthor
-            key={element.id}
-            author_name={element.author_name || ""}
-            avatar_url={element.avatar_url || ""}
-            created_at={created_at}
-          />
-        );
+      // case "post-author":
+      //   return (
+      //     <PostAuthor
+      //       key={element.id}
+      //       author_name={element.author_name || ""}
+      //       avatar_url={element.avatar_url || ""}
+      //       created_at={created_at}
+      //     />
+      //   );
       default:
         return null;
     }
@@ -103,18 +107,22 @@ export default function PostContentRender({
           priority
           className="object-cover"
         />
-      <div className="absolute bottom-4 right-4 flex gap-2">
-        {categories?.map((category) => (
-          <span
-            key={category}
-            className="bg-neutral-primary-text text-white px-2 py-1 rounded-[4px] text-paragraph-b-14 uppercase"
-          >
-            {category}
-          </span>
-        ))}
+        <div className="absolute bottom-4 right-4 flex gap-2">
+          {categories?.map((category) => (
+            <span
+              key={category}
+              className="bg-neutral-primary-text text-white px-2 py-1 rounded-[4px] text-paragraph-b-14 uppercase"
+            >
+              {category}
+            </span>
+          ))}
+        </div>
       </div>
-      </div>
-
+      <PostAuthor
+        author_name={author_name || ""}
+        avatar_url={avatar_url || ""}
+        created_at={created_at}
+      />
       {content.map((element) => renderElement(element))}
     </div>
   );

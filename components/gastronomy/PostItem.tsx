@@ -11,7 +11,7 @@ export default function PostItem({
   posts_categories,
 }: Post) {
   return (
-    <Link prefetch href={`/gastronomy/${slug}`} className="group block">
+    <Link prefetch href={`/${slug}`} className="group block">
       <article className="space-y-5 md:space-y-[30px]">
         {/* Image Container */}
         <div className="relative aspect-[1] mb-4 overflow-hidden">

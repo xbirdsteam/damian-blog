@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { cn } from "@/lib/utils";
+import CountryList from 'country-list-with-dial-code-and-flag';
+import { Search } from "lucide-react";
+import { useState, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -8,8 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
-import CountryList from 'country-list-with-dial-code-and-flag';
-import { cn } from "@/lib/utils";
 
 interface Country {
   name: string;
@@ -42,6 +43,12 @@ export function PhoneInput({
   const [selectedCountry, setSelectedCountry] = useState<Country>(
     CountryList.findOneByCountryCode(defaultCountry) || CountryList.getAll()[0]
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [uniqueCountries, setUniqueCountries] = useState(Array.from(
+    new Map(
+      CountryList.getAll().map(country => [`${country.code}-${country.dial_code}`, country])
+    ).values()
+  ));
 
   const phoneNumber = value.replace(selectedCountry.dial_code, "");
 
@@ -58,18 +65,31 @@ export function PhoneInput({
     onChange(selectedCountry.dial_code + newNumber);
   };
 
-  const uniqueCountries = Array.from(
-    new Map(
-      CountryList.getAll()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map(country => [`${country.code}-${country.dial_code}`, country])
-    ).values()
-  );
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    const filtered = CountryList.getAll()
+      .filter(country => 
+        country.name.toLowerCase().includes(query.toLowerCase()) ||
+        country.dial_code.includes(query) ||
+        country.code.toLowerCase().includes(query.toLowerCase())
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const newUniqueCountries = Array.from(
+      new Map(
+        filtered.map(country => [`${country.code}-${country.dial_code}`, country])
+      ).values()
+    );
+    
+    setUniqueCountries(newUniqueCountries);
+  }, []);
 
   return (
     <div 
       className={cn(
-        "group relative flex h-[50px] w-full rounded-[4px] border border-neutral-border bg-white",
+        "group relative flex w-[300px] h-[50px] w-full rounded-[4px] border border-neutral-border bg-white",
         "hover:border-neutral-text-disable focus-within:border-neutral-primary-text",
         disabled && "bg-neutral-background cursor-not-allowed",
         className
@@ -83,7 +103,7 @@ export function PhoneInput({
         >
           <SelectTrigger 
             className={cn(
-              "h-full px-[14px] min-w-max",
+              "h-full px-[14px] min-w-max !border-none",
               "text-base bg-transparent flex items-center justify-between",
               "focus:outline-none",
               disabled && "cursor-not-allowed"
@@ -97,26 +117,52 @@ export function PhoneInput({
             </SelectValue>
           </SelectTrigger>
           <SelectContent 
-            className="max-h-[300px] overflow-y-auto rounded-[4px] border border-neutral-border bg-white"
+            className={cn(
+              "min-w-[var(--radix-select-trigger-width)] w-max rounded-[4px] border border-neutral-border bg-white",
+              "max-h-[300px]"
+            )}
           >
-            {uniqueCountries.map((country: Country) => (
-              <SelectItem 
-                key={`${country.code}-${country.dial_code}`} 
-                value={country.code}
-                className={cn(
-                  "py-[13px] px-[14px]",
-                  "hover:bg-neutral-background focus:bg-neutral-background",
-                  "cursor-pointer"
-                )}
-              >
-                <span className="flex items-center gap-2">
-                  <span>{country.flag}</span>
-                  <span className="text-neutral-text-secondary">
-                    {country.dial_code}
+            <div className="sticky top-0 z-10 bg-white p-2 border-b border-neutral-border">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-text-secondary" />
+                <input
+                  className="w-full pl-9 pr-4 py-2 text-sm border border-neutral-border rounded-[4px] focus:outline-none focus:border-neutral-primary-text"
+                  placeholder="Search country..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  spellCheck="false"  
+                  autoFocus={true}
+                  onBlur={(e) => e.target.focus()} // Keep focus on blur
+                />
+              </div>
+            </div>
+            <div 
+              className="overflow-y-auto"
+              id="country-list"
+              role="listbox"
+            >
+              {uniqueCountries.map((country: Country) => (
+                <SelectItem 
+                  key={`${country.code}-${country.dial_code}`} 
+                  value={country.code}
+                  className={cn(
+                    "py-[13px] px-[14px] whitespace-nowrap",
+                    "hover:bg-neutral-background focus:bg-neutral-background",
+                    "cursor-pointer"
+                  )}
+                  role="option"
+                  aria-selected={selectedCountry.code === country.code}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{country.flag}</span>
+                    <span className="flex-1">{country.name}</span>
+                    <span className="text-neutral-text-secondary">
+                      {country.dial_code}
+                    </span>
                   </span>
-                </span>
-              </SelectItem>
-            ))}
+                </SelectItem>
+              ))}
+            </div>
           </SelectContent>
         </Select>
       </div>
@@ -136,4 +182,4 @@ export function PhoneInput({
       />
     </div>
   );
-} 
+}

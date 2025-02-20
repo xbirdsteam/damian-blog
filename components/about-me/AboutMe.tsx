@@ -23,7 +23,7 @@ export default async function AboutMe() {
         <div className="space-y-[50px] mlg:space-y-[60px]">
           <h1 className="flex flex-col text-display-b-36 mlg:text-display-b-56">
             <span className="text-neutral-text-secondary">About me,</span>{" "}
-            <span className="text-white">Hi I&lsquo;m Damian</span>
+            <span className="text-white">{aboutMeData.title}</span>
           </h1>
 
           {/* Vision and Mission */}

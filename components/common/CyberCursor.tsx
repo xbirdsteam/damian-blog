@@ -3,67 +3,96 @@ import React, { useEffect, useState } from "react";
 import { motion, useSpring } from "framer-motion";
 
 export function CyberCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
-  // Smooth spring animation for cursor position
-  const smoothX = useSpring(0, {
-    stiffness: 300,
-    damping: 30,
-    mass: 0.5,
+  // Separate spring configs for dot and circle
+  const dotX = useSpring(0, {
+    stiffness: 500,
+    damping: 20,
+    mass: 0.1,
   });
-  const smoothY = useSpring(0, {
-    stiffness: 300,
+  const dotY = useSpring(0, {
+    stiffness: 500,
+    damping: 20,
+    mass: 0.1,
+  });
+
+  // Slower spring for the circle
+  const circleX = useSpring(0, {
+    stiffness: 200,
     damping: 30,
-    mass: 0.5,
+    mass: 1,
+  });
+  const circleY = useSpring(0, {
+    stiffness: 200,
+    damping: 30,
+    mass: 1,
   });
 
   useEffect(() => {
     const handleMouseMove = (e: { clientX: number; clientY: number }) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      smoothX.set(e.clientX);
-      smoothY.set(e.clientY);
+      dotX.set(e.clientX);
+      dotY.set(e.clientY);
+      circleX.set(e.clientX);
+      circleY.set(e.clientY);
     };
 
-    const handleCursorStyle = () => {
-      const hoveredElement = document.elementFromPoint(
-        mousePosition.x,
-        mousePosition.y
-      );
-      setIsPointer(
-        !!(
-          hoveredElement?.tagName === "BUTTON" ||
-          hoveredElement?.tagName === "A" ||
-          hoveredElement?.closest("button") ||
-          hoveredElement?.closest("a") ||
-          window.getComputedStyle(hoveredElement || document.body).cursor ===
-            "pointer"
-        )
-      );
-    };
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
+
+    // Handle hover states for clickable elements
+    const clickables = document.querySelectorAll(
+      'a, button, input[type="submit"], input[type="image"], label[for], select, [role="button"]'
+    );
+
+    clickables.forEach((el) => {
+      el.addEventListener("mouseover", () => {
+        setIsActive(true);
+        setIsPointer(true);
+      });
+      el.addEventListener("mouseout", () => {
+        setIsActive(false);
+        setIsPointer(false);
+      });
+    });
 
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseover", handleCursorStyle);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseover", handleCursorStyle);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+
+      clickables.forEach((el) => {
+        el.removeEventListener("mouseover", () => {
+          setIsActive(true);
+          setIsPointer(true);
+        });
+        el.removeEventListener("mouseout", () => {
+          setIsActive(false);
+          setIsPointer(false);
+        });
+      });
     };
-  }, [mousePosition.x, mousePosition.y, smoothX, smoothY]);
+  }, [dotX, dotY, circleX, circleY]);
 
   return (
     <>
-      {/* Main circle */}
+      {/* Main circle - follows slower */}
       <motion.div
         className="fixed pointer-events-none z-[999999] hidden md:block"
         style={{
-          x: smoothX,
-          y: smoothY,
+          x: circleX,
+          y: circleY,
           translateX: "-50%",
           translateY: "-50%",
         }}
         animate={{
-          scale: isPointer ? 0.5 : 1,
+          scale: isPointer ? 1 : 1,
         }}
         transition={{
           scale: {
@@ -74,30 +103,36 @@ export function CyberCursor() {
         }}
       >
         <div
-          className={`w-8 h-8 rounded-full border transition-all duration-300
+          className={`rounded-full transition-all duration-300
+            ${isClicking ? "w-0 h-0" : "w-[30px] h-[30px]"}
             ${
-              isPointer
-                ? "border-neutral-text-secondary bg-neutral-text-secondary"
-                : "border-neutral-primary-text bg-transparent"
+              isActive
+                ? "border-[3px] border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.1)]"
+                : "border border-[rgba(0,0,0,0.3)] bg-transparent"
             }
           `}
         />
       </motion.div>
 
-      {/* Small dot */}
+      {/* Small dot - moves faster */}
       <motion.div
         className="fixed pointer-events-none z-[999999] hidden md:block"
         style={{
-          x: smoothX,
-          y: smoothY,
+          x: dotX,
+          y: dotY,
           translateX: "-50%",
           translateY: "-50%",
         }}
       >
         <div
-          className={`w-1 h-1 rounded-full ${
-            isPointer ? "bg-neutral-text-secondary" : "bg-neutral-primary-text"
-          }`}
+          className={`rounded-full transition-all duration-300 
+            ${isClicking ? "size-[10px]" : isActive ? "size-[25px]" : "size-[6px]"}
+            ${
+              isActive 
+                ? "bg-[rgba(255,255,255,0.1)]" 
+                : "bg-neutral-primary-text"
+            }
+          `}
         />
       </motion.div>
     </>

@@ -96,7 +96,7 @@ export default function PostDetailFooter({
           <div className="flex-1">
             {prevPost && (
               <Link
-                href={`/gastronomy/${prevPost.slug}`}
+                href={`/${prevPost.slug}`}
                 className="block p-6 hover:bg-neutral-hover transition-colors"
               >
                 <div className="space-y-2 flex flex-col items-start">
@@ -117,7 +117,7 @@ export default function PostDetailFooter({
           <div className="flex-1">
             {nextPost && (
               <Link
-                href={`/gastronomy/${nextPost.slug}`}
+                href={`/${nextPost.slug}`}
                 className="block p-6 text-right hover:bg-neutral-hover transition-colors"
               >
                 <div className="space-y-2 flex flex-col items-end">
