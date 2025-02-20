@@ -1,5 +1,5 @@
 import AboutMe from "@/components/about-me/AboutMe";
-import { PageLoading } from "@/components/common/PageLoading";
+import { BackgroundMove } from "@/components/common/BackgroundMove";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
 
@@ -10,7 +10,6 @@ export async function generateMetadata(): Promise<Metadata> {
     .select("*")
     .eq("slug", "about")
     .single();
-
   if (error)
     return {
       title: "Damian",
@@ -30,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function AboutPage() {
   return (
     <>
-      <PageLoading />
+      <BackgroundMove />
       <AboutMe />
     </>
   );

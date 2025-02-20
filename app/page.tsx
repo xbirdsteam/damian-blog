@@ -1,12 +1,12 @@
-import { createClient } from "@/utils/supabase/server";
-import { HomeData } from "@/types/home";
-import HeroSection from "@/components/home-page/sections/HeroSection";
-import ExperienceSection from "@/components/home-page/sections/ExperienceSection";
+import { BackgroundMove } from "@/components/common/BackgroundMove";
 import AboutSection from "@/components/home-page/sections/AboutSection";
-import RecipeSection from "@/components/home-page/sections/RecipeSection";
 import ContactSection from "@/components/home-page/sections/ContactSection";
+import ExperienceSection from "@/components/home-page/sections/ExperienceSection";
+import HeroSection from "@/components/home-page/sections/HeroSection";
+import RecipeSection from "@/components/home-page/sections/RecipeSection";
+import { HomeData } from "@/types/home";
+import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
-import { PageLoading } from "@/components/common/PageLoading";
 
 async function getHomeData() {
   const supabase = await createClient();
@@ -44,7 +44,7 @@ export default async function Home() {
   if (!homeData) return null;
   return (
     <>
-      <PageLoading />
+      <BackgroundMove />
       <HeroSection data={homeData} />
       <ExperienceSection />
       <AboutSection data={homeData} />

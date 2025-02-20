@@ -1,5 +1,5 @@
 import { getPostBySlug } from "@/actions/post";
-import { PageLoading } from "@/components/common/PageLoading";
+import { BackgroundMove } from "@/components/common/BackgroundMove";
 import PostDetailWrapper from "@/components/gastronomy/post-detail/PostDetailWrapper";
 import { notFound } from "next/navigation";
 
@@ -28,10 +28,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default function GastronomyPostDetailPage() {
-  return (
-    <>
-      <PageLoading />
-      <PostDetailWrapper />
-    </>
-  );
+  return <>
+  <BackgroundMove />
+  <PostDetailWrapper />
+  </>
 }

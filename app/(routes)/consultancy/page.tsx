@@ -1,4 +1,4 @@
-import { PageLoading } from "@/components/common/PageLoading";
+import { BackgroundMove } from "@/components/common/BackgroundMove";
 import Consultancy from "@/components/consultancy/Consultancy";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
@@ -30,8 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ConsultancyPage() {
   return (
     <>
+      <BackgroundMove />
       <Consultancy />
-      <PageLoading />
     </>
   );
 }

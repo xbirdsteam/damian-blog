@@ -1,4 +1,4 @@
-import { PageLoading } from "@/components/common/PageLoading";
+import { BackgroundMove } from "@/components/common/BackgroundMove";
 import Gastronomy from "@/components/gastronomy/Gastronomy";
 import { createClient } from "@/utils/supabase/server";
 
@@ -22,11 +22,13 @@ async function getCategories() {
 }
 
 export default async function GastronomyPage({ searchParams }: IProps) {
-  const categories = await getCategories();
-  const paramsRes = await searchParams;
+  const [categories, paramsRes] = await Promise.all([
+    getCategories(),
+    searchParams,
+  ]);
   return (
     <>
-      <PageLoading />
+      <BackgroundMove />
       <Gastronomy categories={categories} searchParams={paramsRes} />
     </>
   );

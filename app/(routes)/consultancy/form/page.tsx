@@ -1,10 +1,10 @@
-import { PageLoading } from "@/components/common/PageLoading";
 import ConsultanyForm from "@/components/consultancy/consultancy-form/ConsultanyForm";
+import { BackgroundMove } from "@/components/common/BackgroundMove";
 
 export default function ConsultancyTakeProjectPage() {
   return (
     <>
-      <PageLoading />
+      <BackgroundMove />
       <ConsultanyForm />
     </>
   );
