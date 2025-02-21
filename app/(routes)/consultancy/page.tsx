@@ -73,7 +73,7 @@ export default async function ConsultancyPage() {
   if (!data) return null;
   return (
     <>
-      <PageLoading showAll />
+      <PageLoading />
       <Consultancy data={data} />
     </>
   );

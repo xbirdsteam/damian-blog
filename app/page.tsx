@@ -52,7 +52,7 @@ export default async function Home() {
   if (!homeData) return null;
   return (
     <>
-      <PageLoading showAll />
+      <PageLoading />
       <HeroSection data={homeData} />
       <ExperienceSection />
       <AboutSection data={homeData} />

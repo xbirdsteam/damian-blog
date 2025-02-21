@@ -28,7 +28,7 @@ export default async function GastronomyPage({ searchParams }: IProps) {
   ]);
   return (
     <>
-      <PageLoading showAll />
+      <PageLoading />
       <Gastronomy categories={categories} searchParams={paramsRes} />
     </>
   );
