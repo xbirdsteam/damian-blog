@@ -42,20 +42,25 @@ export function CyberCursor() {
     const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
 
+    // Create the event handlers outside of forEach
+    const handleMouseOver = () => {
+      setIsActive(true);
+      setIsPointer(true);
+    };
+
+    const handleMouseOut = () => {
+      setIsActive(false);
+      setIsPointer(false);
+    };
+
     // Handle hover states for clickable elements
     const clickables = document.querySelectorAll(
-      'a, button, input[type="submit"], input[type="image"], label[for], select, [role="button"]'
+      'a, button, input[type="submit"], input[type="image"], label[for], select, [role="button"], [class*="btn"]'
     );
 
     clickables.forEach((el) => {
-      el.addEventListener("mouseover", () => {
-        setIsActive(true);
-        setIsPointer(true);
-      });
-      el.addEventListener("mouseout", () => {
-        setIsActive(false);
-        setIsPointer(false);
-      });
+      el.addEventListener("mouseover", handleMouseOver);
+      el.addEventListener("mouseout", handleMouseOut);
     });
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -67,15 +72,10 @@ export function CyberCursor() {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
 
+      // Remove event listeners with the same function references
       clickables.forEach((el) => {
-        el.removeEventListener("mouseover", () => {
-          setIsActive(true);
-          setIsPointer(true);
-        });
-        el.removeEventListener("mouseout", () => {
-          setIsActive(false);
-          setIsPointer(false);
-        });
+        el.removeEventListener("mouseover", handleMouseOver);
+        el.removeEventListener("mouseout", handleMouseOut);
       });
     };
   }, [dotX, dotY, circleX, circleY]);

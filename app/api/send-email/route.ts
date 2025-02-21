@@ -170,7 +170,8 @@ export async function POST(req: Request) {
                 await createLead({
                     name: formData.name,
                     email: formData.email,
-                    form_type: FormType.CONTACT
+                    form_type: FormType.CONTACT,
+                    content: JSON.stringify(formData)
                 });
 
                 return NextResponse.json(
@@ -217,7 +218,8 @@ export async function POST(req: Request) {
                     name: formData[1]["Full name_text"],
                     email: formData[1]["Email address_email"],
                     phone: formData[1]["Phone number_tel"],
-                    form_type: FormType.CONSULTANT
+                    form_type: FormType.CONSULTANT,
+                    content: JSON.stringify(formData)
                 });
 
                 return NextResponse.json(

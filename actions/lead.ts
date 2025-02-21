@@ -17,6 +17,7 @@ interface LeadData {
     email: string;
     phone?: string;
     form_type: FormType;
+    content?: string;
 }
 
 const createLead = async (data: LeadData): Promise<void> => {
