@@ -1,5 +1,5 @@
 import AboutMe from "@/components/about-me/AboutMe";
-import { BackgroundMove } from "@/components/common/BackgroundMove";
+import { PageLoading } from "@/components/common/PageLoading";
 import { AboutData } from "@/types/about-me";
 import { createClient } from "@/utils/supabase/server";
 import { Metadata } from "next";
@@ -50,7 +50,7 @@ export default async function AboutPage() {
   if (!aboutMeData) return null;
   return (
     <>
-      <BackgroundMove />
+      <PageLoading showAll />
       <AboutMe aboutMeData={aboutMeData} />
     </>
   );

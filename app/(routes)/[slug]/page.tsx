@@ -1,4 +1,3 @@
-import { BackgroundMove } from "@/components/common/BackgroundMove";
 import PostDetailWrapper from "@/components/gastronomy/post-detail/PostDetailWrapper";
 import { createClient } from "@/utils/supabase/server";
 
@@ -41,7 +40,6 @@ export async function generateMetadata({ params }: Props) {
 export default function GastronomyPostDetailPage() {
   return (
     <>
-      <BackgroundMove />
       <PostDetailWrapper />
     </>
   );

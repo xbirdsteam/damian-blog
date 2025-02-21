@@ -1,4 +1,4 @@
-import { BackgroundMove } from "@/components/common/BackgroundMove";
+import { PageLoading } from "@/components/common/PageLoading";
 import AboutSection from "@/components/home-page/sections/AboutSection";
 import ContactSection from "@/components/home-page/sections/ContactSection";
 import ExperienceSection from "@/components/home-page/sections/ExperienceSection";
@@ -39,11 +39,11 @@ export async function generateMetadata(): Promise<Metadata> {
       images: seoData.og_image,
     },
     twitter: {
-      card: 'summary_large_image',
-      title: seoData.meta_title, 
+      card: "summary_large_image",
+      title: seoData.meta_title,
       description: seoData.meta_description,
       images: seoData.og_twitter_image,
-    }
+    },
   };
 }
 
@@ -52,7 +52,7 @@ export default async function Home() {
   if (!homeData) return null;
   return (
     <>
-      <BackgroundMove />
+      <PageLoading showAll />
       <HeroSection data={homeData} />
       <ExperienceSection />
       <AboutSection data={homeData} />

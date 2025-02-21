@@ -1,4 +1,4 @@
-import { BackgroundMove } from "@/components/common/BackgroundMove";
+import { PageLoading } from "@/components/common/PageLoading";
 import Consultancy from "@/components/consultancy/Consultancy";
 import { ConsultancyContent } from "@/types/consultancy";
 import { createClient } from "@/utils/supabase/server";
@@ -73,7 +73,7 @@ export default async function ConsultancyPage() {
   if (!data) return null;
   return (
     <>
-      <BackgroundMove />
+      <PageLoading showAll />
       <Consultancy data={data} />
     </>
   );

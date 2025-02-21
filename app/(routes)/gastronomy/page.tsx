@@ -1,4 +1,4 @@
-import { BackgroundMove } from "@/components/common/BackgroundMove";
+import { PageLoading } from "@/components/common/PageLoading";
 import Gastronomy from "@/components/gastronomy/Gastronomy";
 import { createClient } from "@/utils/supabase/server";
 
@@ -28,7 +28,7 @@ export default async function GastronomyPage({ searchParams }: IProps) {
   ]);
   return (
     <>
-      <BackgroundMove />
+      <PageLoading showAll />
       <Gastronomy categories={categories} searchParams={paramsRes} />
     </>
   );

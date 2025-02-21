@@ -81,7 +81,6 @@
 
 /* Loading animation styles */
 @keyframes pulse0112 {
-
   0%,
   100% {
     transform: scale(0);
@@ -125,8 +124,6 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -151,4 +148,71 @@ img {
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Add these styles to your existing globals.css */
+
+@keyframes loaderBar {
+  0% {
+    transform: translateX(0) scaleX(0);
+    transform-origin: left;
+    left: 33.3%;
+    right: auto;
+  }
+  45% {
+    transform: translateX(0) scaleX(1);
+    transform-origin: left;
+    left: 33.3%;
+    right: auto;
+  }
+  50% {
+    transform: translateX(0) scaleX(1);
+    transform-origin: right;
+    left: auto;
+    right: 33.3%;
+  }
+  100% {
+    transform: translateX(0) scaleX(0);
+    transform-origin: right;
+    left: auto;
+    right: 33.3%;
+  }
+}
+
+.preloader {
+  background-color: #101010;
+  height: 100%;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 99999;
+  transform-origin: top;
+}
+
+.loader-bar {
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 33.3%;
+  width: 33.3%;
+  height: 1px;
+  background-color: #ffffff;
+  z-index: 99999;
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: loaderBar 1.2s forwards;
+}
+
+/* Add this new animation */
+@keyframes slideUp {
+  0% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+.preloader-exit {
+  animation: slideUp 0.6s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
 }
