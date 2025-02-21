@@ -26,7 +26,6 @@ export async function GET(request: Request) {
             throw new Error('Failed to get access token');
         }
 
-
         // Step 2: Exchange for long-lived token
         const longLivedTokenResponse = await fetch(
             `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&access_token=${tokenData.access_token}`
@@ -38,20 +37,30 @@ export async function GET(request: Request) {
 
         const longLivedToken = await longLivedTokenResponse.json();
 
-        // Return HTML that only sets access_token cookie and sends message
+        // Return HTML that sends message to itself first, then to parent
         const response = new Response(
             `
             <html>
                 <body>
                     <script>
-                        // Set only access_token cookie
+                        // Set cookie
                         document.cookie = 'instagram_access_token=${longLivedToken.access_token}; path=/; max-age=${60 * 24 * 60 * 60}; SameSite=Lax';
                         
-                        window.opener.postMessage({
-                            type: 'INSTAGRAM_LOGIN_SUCCESS',
-                            accessToken: '${longLivedToken.access_token}'
-                        }, '*');
-                        window.close();
+                        // First send message to self
+                        window.postMessage({ type: 'SELF_CLOSE' }, '*');
+
+                        // Then send message to parent
+                        if (window.opener) {
+                            window.opener.postMessage({
+                                type: 'INSTAGRAM_LOGIN_SUCCESS',
+                                accessToken: '${longLivedToken.access_token}'
+                            }, '*');
+                        }
+
+                        // Close after a short delay
+                        setTimeout(() => {
+                            window.close();
+                        }, 100);
                     </script>
                 </body>
             </html>
@@ -71,8 +80,18 @@ export async function GET(request: Request) {
             <html>
                 <body>
                     <script>
-                        window.opener.postMessage({ type: 'INSTAGRAM_LOGIN_ERROR', error: '${error}' }, '*');
-                        window.close();
+                        window.postMessage({ type: 'SELF_CLOSE' }, '*');
+                        
+                        if (window.opener) {
+                            window.opener.postMessage({ 
+                                type: 'INSTAGRAM_LOGIN_ERROR', 
+                                error: '${error}' 
+                            }, '*');
+                        }
+                        
+                        setTimeout(() => {
+                            window.close();
+                        }, 100);
                     </script>
                 </body>
             </html>

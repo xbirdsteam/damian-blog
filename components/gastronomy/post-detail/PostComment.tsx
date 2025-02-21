@@ -15,7 +15,7 @@ import {
 } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { Instagram } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import PostCommentItem from "./PostCommentItem";
 
@@ -52,6 +52,9 @@ export default function PostComment({ postId }: PostCommentProps) {
     username: string;
     profilePictureUrl?: string;
   } | null>(null);
+
+  // Store popup reference
+  const popupRef = useRef<Window | null>(null);
 
   // Fetch comments with pagination
   const {
@@ -149,25 +152,31 @@ export default function PostComment({ postId }: PostCommentProps) {
       if (userData.username) {
         setInstagramUser({
           username: userData.username,
-          profilePictureUrl: userData.profile_picture_url
+          profilePictureUrl: userData.profile_picture_url,
         });
         setIsInstagramLoggedIn(true);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           author_name: userData.username,
-          author_email: `${userData.username}@instagram.user`, // Set default Instagram email
-          saveInfo: false // No need to save info for Instagram users
+          author_email: `${userData.username}@instagram.user`,
+          saveInfo: false,
         }));
+
+        // Close popup if it's still open
+        if (popupRef.current && !popupRef.current.closed) {
+          popupRef.current.close();
+          popupRef.current = null;
+        }
       }
     } catch (error) {
-      console.error('Failed to fetch Instagram user:', error);
+      console.error("Failed to fetch Instagram user:", error);
       handleInstagramSignOut();
     }
   };
 
   // Check login status on mount
   useEffect(() => {
-    const accessToken = Cookies.get('instagram_access_token');
+    const accessToken = Cookies.get("instagram_access_token");
     if (accessToken) {
       fetchInstagramUserData(accessToken);
     }
@@ -175,7 +184,7 @@ export default function PostComment({ postId }: PostCommentProps) {
 
   // Update sign out handler
   const handleInstagramSignOut = () => {
-    Cookies.remove('instagram_access_token');
+    Cookies.remove("instagram_access_token");
     setInstagramUser(null);
     setIsInstagramLoggedIn(false);
 
@@ -186,58 +195,68 @@ export default function PostComment({ postId }: PostCommentProps) {
     // Set form data based on localStorage or empty values
     setFormData((prev) => ({
       ...prev,
-      author_name: savedName || '',
-      author_email: savedEmail || '',
-      saveInfo: !!(savedName && savedEmail) // Convert to boolean
+      author_name: savedName || "",
+      author_email: savedEmail || "",
+      saveInfo: !!(savedName && savedEmail), // Convert to boolean
     }));
 
-    toast.success('Successfully signed out from Instagram');
+    toast.success("Successfully signed out from Instagram");
   };
+
+  // Move event listener inside useEffect to prevent memory leaks
+  useEffect(() => {
+    const messageHandler = (event: MessageEvent) => {
+      // Handle messages from popup window
+      if (event.data.type === "INSTAGRAM_LOGIN_SUCCESS") {
+        const { accessToken } = event.data;
+        fetchInstagramUserData(accessToken);
+      } else if (event.data.type === "INSTAGRAM_LOGIN_ERROR") {
+        console.error("Instagram Login Error:", event.data.error);
+        toast.error("Instagram connection failed");
+      }
+    };
+
+    window.addEventListener("message", messageHandler);
+
+    return () => {
+      window.removeEventListener("message", messageHandler);
+    };
+  }, []);
 
   // Add Instagram login handler
   const handleInstagramLogin = () => {
     const instagramAuthUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=2374033366276240&redirect_uri=${process.env.NEXT_PUBLIC_APP_URL}/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
 
     const width = 600;
-    const height = 700;
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
+    const height = 800;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
 
-    const popup = window.open(
+    popupRef.current = window.open(
       instagramAuthUrl,
-      "instagram-auth",
-      `width=${width},height=${height},left=${left},top=${top},status=yes,scrollbars=yes`
+      "instagram_auth",
+      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
     );
 
-    if (!popup) {
+    if (!popupRef.current) {
       toast.error("Popup was blocked. Please allow popups for this site.");
     }
   };
 
-  // Move event listener inside useEffect to prevent memory leaks
   useEffect(() => {
-    const messageHandler = (event: MessageEvent) => {
-      if (event.data.type === 'INSTAGRAM_LOGIN_SUCCESS') {
-        const { accessToken } = event.data;
-        fetchInstagramUserData(accessToken);
-      } else if (event.data.type === 'INSTAGRAM_LOGIN_ERROR') {
-        console.error('Instagram Login Error:', event.data.error);
-        toast.error("Instagram connection failed");
-      }
-    };
-
-    window.addEventListener('message', messageHandler);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('message', messageHandler);
-    };
-  }, []);
+    if (popupRef.current) {
+      popupRef.current.addEventListener("message", (event) => {
+        console.log("message", event);
+      });
+    }
+  }, [popupRef.current]);
 
   // Update isFormValid to handle Instagram login case
   const isFormValid = () => {
     if (isInstagramLoggedIn) {
-      return formData.content.trim() !== "" && formData.author_name.trim() !== "";
+      return (
+        formData.content.trim() !== "" && formData.author_name.trim() !== ""
+      );
     }
     return (
       formData.content.trim() !== "" &&
@@ -366,8 +385,8 @@ export default function PostComment({ postId }: PostCommentProps) {
           ) : (
             <div className="flex items-center gap-4 p-3 rounded-lg border border-border">
               {instagramUser?.profilePictureUrl && (
-                <img 
-                  src={instagramUser.profilePictureUrl} 
+                <img
+                  src={instagramUser.profilePictureUrl}
                   alt={instagramUser.username}
                   className="w-8 h-8 rounded-full"
                 />
@@ -441,7 +460,8 @@ export default function PostComment({ postId }: PostCommentProps) {
                   htmlFor="save-info"
                   className="text-paragraph-r-14 text-neutral-primary-text"
                 >
-                  Save my name and email in this browser for the next time I comment.
+                  Save my name and email in this browser for the next time I
+                  comment.
                 </label>
               </div>
             )}

@@ -1,22 +1,13 @@
 import { AboutData } from "@/types/about-me";
-import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import MileStoneWrapper from "./MileStoneWrapper";
 import WhereIAm from "./WhereIAm";
 
-const getAboutMeData = async (): Promise<AboutData> => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("about_me").select("*").single();
+interface IProps {
+  aboutMeData: AboutData;
+}
 
-  if (error) {
-    throw error;
-  }
-  return data;
-};
-
-export default async function AboutMe() {
-  const aboutMeData = await getAboutMeData();
-
+export default async function AboutMe({ aboutMeData }: IProps) {
   return (
     <section className="bg-neutral-primary-text py-[50px] mlg:py-20 min-h-screen relative">
       <div className="container mx-auto">

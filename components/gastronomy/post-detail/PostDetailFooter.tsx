@@ -51,8 +51,8 @@ export default function PostDetailFooter({
   return (
     <footer className="space-y-10">
       {/* Tags and Social Share */}
-      <div className="flex flex-col gap-5 mlg:gap-0 mlg:flex-row justify-between items-center container mx-auto">
-        <div className="flex gap-[10px]">
+      <div className="flex flex-col gap-5 mlg:gap-10 mlg:flex-row justify-between items-start container mx-auto">
+        <div className="flex gap-[10px] flex-wrap">
           {tags.map((tag) => (
             <span
               key={tag}
@@ -63,7 +63,7 @@ export default function PostDetailFooter({
           ))}
         </div>
 
-        <div className="flex flex-col mlg:flex-row items-center gap-2 mlg:gap-6">
+        <div className="flex shrink-0 flex-col mlg:flex-row items-center gap-2 mlg:gap-6">
           <span className="text-title-b-18 text-neutral-primary-text">
             Share the article via
           </span>

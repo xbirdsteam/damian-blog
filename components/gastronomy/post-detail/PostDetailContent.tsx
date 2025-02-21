@@ -1,11 +1,12 @@
 "use client";
 import { getPostBySlug } from "@/actions/post";
-import { useParams } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import PostContentRender from "@/components/common/PostContentRender";
 import { useQuery } from "@tanstack/react-query";
 import PostDetailFooter from "./PostDetailFooter";
 import PostComment from "./PostComment";
 import { Loading } from "@/components/common/Loading";
+import { PostStatus } from "@/types/post";
 
 export default function PostDetailContent() {
   const { slug } = useParams();
@@ -19,6 +20,7 @@ export default function PostDetailContent() {
     return <Loading hasOverlay size={5} color="#FFF" />;
   }
   if (!post) return null;
+  if (post.status === PostStatus.DRAFT) return notFound();
   return (
     <>
       <article className="container mx-auto py-10">
@@ -26,16 +28,17 @@ export default function PostDetailContent() {
           content={JSON.parse(post.content)}
           created_at={post.created_at}
           post_img={post.post_img}
-          categories={post.posts_categories?.map((category) => category.categories.name) || []}
+          categories={
+            post.posts_categories?.map(
+              (category) => category.categories.name
+            ) || []
+          }
           author_name={post.users?.fullname || ""}
           avatar_url={post.users?.avatar_url || ""}
         />
       </article>
       <PostDetailFooter
-        tags={
-          post.tags ||
-          []
-        }
+        tags={post.tags || []}
         prevPost={post.prev_post || undefined}
         nextPost={post.next_post || undefined}
       />

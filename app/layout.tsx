@@ -1,11 +1,11 @@
+import { CyberCursor } from "@/components/common/CyberCursor";
+import { Footer } from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
-import { Footer } from "@/components/layout/Footer";
-import { Toaster } from "@/components/ui/sonner";
 import Providers from "./providers";
-import { CyberCursor } from "@/components/common/CyberCursor";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -14,8 +14,11 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "Damian Blog",
-  description: "Damian Blog",
+  title: "Damian",
+  description: "Damian",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

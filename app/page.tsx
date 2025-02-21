@@ -34,8 +34,16 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seoData.meta_description,
     keywords: seoData.meta_keywords,
     openGraph: {
+      title: seoData.meta_title,
+      description: seoData.meta_description,
       images: seoData.og_image,
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoData.meta_title, 
+      description: seoData.meta_description,
+      images: seoData.og_twitter_image,
+    }
   };
 }
 

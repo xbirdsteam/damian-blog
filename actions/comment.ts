@@ -11,7 +11,6 @@ export async function getCommentsByPostId(postId: string, page: number = 1): Pro
     totalPages: number;
 }> {
     const supabase = await createClient();
-
     // Get approved comments with count
     const { data: comments, error } = await supabase
         .from('comments')
