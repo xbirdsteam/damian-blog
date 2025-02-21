@@ -50,7 +50,7 @@ export default async function AboutPage() {
   if (!aboutMeData) return null;
   return (
     <>
-      <PageLoading showAll />
+      <PageLoading />
       <AboutMe aboutMeData={aboutMeData} />
     </>
   );
