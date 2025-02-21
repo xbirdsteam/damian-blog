@@ -203,53 +203,42 @@ export default function PostComment({ postId }: PostCommentProps) {
     toast.success("Successfully signed out from Instagram");
   };
 
-  // Move event listener inside useEffect to prevent memory leaks
+  // Add Instagram login handler
+  const handleInstagramLogin = () => {
+    const currentUrl = window.location.href;
+    // Store the current URL in localStorage to redirect back after login
+    localStorage.setItem("instagram_redirect_url", currentUrl);
+
+    const instagramAuthUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=2374033366276240&redirect_uri=${process.env.NEXT_PUBLIC_APP_URL}/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
+
+    // Instead of popup, redirect to Instagram auth
+    window.location.href = instagramAuthUrl;
+  };
+
+  // Check for Instagram token on mount and URL changes
   useEffect(() => {
-    const messageHandler = (event: MessageEvent) => {
-      // Handle messages from popup window
-      if (event.data.type === "INSTAGRAM_LOGIN_SUCCESS") {
-        const { accessToken } = event.data;
+    const checkInstagramAuth = () => {
+      const accessToken = Cookies.get("instagram_access_token");
+      const redirectUrl = localStorage.getItem("instagram_redirect_url");
+
+      if (accessToken && redirectUrl) {
+        // Clear the redirect URL
+        localStorage.removeItem("instagram_redirect_url");
+        // Fetch user data
         fetchInstagramUserData(accessToken);
-      } else if (event.data.type === "INSTAGRAM_LOGIN_ERROR") {
-        console.error("Instagram Login Error:", event.data.error);
-        toast.error("Instagram connection failed");
       }
     };
 
-    window.addEventListener("message", messageHandler);
+    // Check on mount
+    checkInstagramAuth();
+
+    // Also check when the window gains focus
+    window.addEventListener("focus", checkInstagramAuth);
 
     return () => {
-      window.removeEventListener("message", messageHandler);
+      window.removeEventListener("focus", checkInstagramAuth);
     };
   }, []);
-
-  // Add Instagram login handler
-  const handleInstagramLogin = () => {
-    const instagramAuthUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=2374033366276240&redirect_uri=${process.env.NEXT_PUBLIC_APP_URL}/api/auth/instagram/callback/&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
-
-    const width = 600;
-    const height = 800;
-    const left = (window.screen.width - width) / 2;
-    const top = (window.screen.height - height) / 2;
-
-    popupRef.current = window.open(
-      instagramAuthUrl,
-      "instagram_auth",
-      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
-    );
-
-    if (!popupRef.current) {
-      toast.error("Popup was blocked. Please allow popups for this site.");
-    }
-  };
-
-  useEffect(() => {
-    if (popupRef.current) {
-      popupRef.current.addEventListener("message", (event) => {
-        console.log("message", event);
-      });
-    }
-  }, [popupRef.current]);
 
   // Update isFormValid to handle Instagram login case
   const isFormValid = () => {
